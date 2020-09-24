@@ -98,7 +98,6 @@ public class MyButtons extends ComputeFunctions implements View.OnClickListener 
                 textView.setText(holdTempResult);
                 break;
             case R.id.button9:
-                v.setBackgroundResource(R.drawable.custom_dialog);
                 holdTempResult += "9";
                 textView.setText(holdTempResult);
                 break;
