@@ -101,8 +101,6 @@ public class MyButtons extends ComputeFunctions implements View.OnClickListener 
                 v.setBackgroundResource(R.drawable.custom_dialog);
                 holdTempResult += "9";
                 textView.setText(holdTempResult);
-
-
                 break;
             case R.id.buttonAdd:
                 holdTempResult += ADD;
