@@ -1,21 +1,32 @@
 package com.example.calculator;
 
-import android.support.v4.app.INotificationSideChannel;
-
 import java.util.ArrayList;
 
 public class ComputeFunctions {
 
-    protected final char ADD = '+', SUBTRACT = '-', MUTIPLY = '*', DIVIDE = '/';
+    protected final char ADD = '+', SUBTRACT = '-', MULTIPLY = '*', DIVIDE = '/', NEGATIVE = '_';
     protected String holdTempResult = "";
+    protected String holdTempCopy = "";
     private Boolean initialise;
-    protected ArrayList<Integer> numbers = new ArrayList<>();
+    protected ArrayList<Double> numbers = new ArrayList<>();
+
     protected ArrayList<Character> operations = new ArrayList<>();
     protected boolean opFixed = false;
+    protected boolean negativeSignChosen = false;
+    protected boolean previousNumberIsNegative = false;
 
     // Follows PEMDAS
-    protected int computeResult() {
+    protected double computeResult() {
         System.out.printf("Your string before operations: %s\n", holdTempResult);
+
+        // if answer is negative, then I need to change my negative to the special operator
+        // Ex: -10 --> _10
+        if(previousNumberIsNegative)
+        {
+            holdTempResult =  holdTempResult.replaceFirst("-", "_");
+            previousNumberIsNegative = false;
+        }
+        System.out.printf("Your string after operations: %s\n", holdTempResult);
 
         // parse String to separate the numbers from the operators
         getNumbersAndOperators();
@@ -86,13 +97,13 @@ public class ComputeFunctions {
                 continue;
             }
         }
-        System.out.printf("[computeResult()] Your answer: %s\n", holdTempResult);
+        System.out.printf("[computeResult()] Your answer: %s\n", numbers.get(0));
 
         return numbers.get(0);
     }
 
     // Checks if both lists are equal
-    protected boolean theListsAreEqual(ArrayList<Integer> int_list, ArrayList<Character> char_list)
+    protected boolean theListsAreEqual(ArrayList<Double> int_list, ArrayList<Character> char_list)
     {
         return int_list.size() == char_list.size();
     }
@@ -101,38 +112,97 @@ public class ComputeFunctions {
     private void getNumbersAndOperators()
     {
         int result = 0;
+        int index = 0;
         String hold = "";
         char holdPreviousOp = '0';
         initialise = true;
 
         for (char stringChar : holdTempResult.toCharArray()) {
             switch (stringChar) {
+                case (NEGATIVE):
+                    System.out.println("Negative sign character recognized\n");
+                    negativeSignChosen = true;
+                    break;
                 case (ADD):
-                    numbers.add(Integer.parseInt(hold));
+                    if(negativeSignChosen)
+                    {
+                        System.out.printf("Hold in add = %s\n", hold);
+                        hold = hold.replace("_", "");
+                        numbers.add(Double.parseDouble(hold) * (-1.0));
+                    }
+                    else
+                    {
+                        numbers.add(Double.parseDouble(hold));
+                    }
                     operations.add(ADD);
                     hold = "";
+                    negativeSignChosen = false;
                     break;
                 case (SUBTRACT):
-                    numbers.add(Integer.parseInt(hold));
+                    if(negativeSignChosen)
+                    {
+                        hold = hold.replaceFirst("_", "");
+
+                        numbers.add(Double.parseDouble(hold) * (-1.0));
+                    }
+                    else
+                    {
+                        System.out.printf("Hold in subtract = %s\n", hold);
+                        numbers.add(Double.parseDouble(hold));
+                    }
                     operations.add(SUBTRACT);
                     hold = "";
+                    negativeSignChosen = false;
                     break;
-                case (MUTIPLY):
-                    numbers.add(Integer.parseInt(hold));
-                    operations.add(MUTIPLY);
+                case (MULTIPLY):
+                    if(negativeSignChosen)
+                    {
+                        hold = hold.replaceFirst("_", "");
+
+                        numbers.add(Double.parseDouble(hold) * (-1.0));
+                    }
+                    else
+                    {
+                        numbers.add(Double.parseDouble(hold));
+                    }
+                    operations.add(MULTIPLY);
                     hold = "";
+                    negativeSignChosen = false;
                     break;
                 case (DIVIDE):
-                    numbers.add(Integer.parseInt(hold));
+                    if(negativeSignChosen)
+                    {
+                        hold = hold.replaceFirst("_", "");
+
+                        numbers.add(Double.parseDouble(hold) * (-1.0));
+                    }
+                    else
+                    {
+                        numbers.add(Double.parseDouble(hold));
+                    }
                     operations.add(DIVIDE);
                     hold = "";
+                    negativeSignChosen = false;
                     break;
                 default:
                     // bug could be here
                     hold += stringChar;
             }
+            index += 1;
         }
-        numbers.add(Integer.parseInt(hold));
+        System.out.printf("Hold after forloop = %s\n", hold);
+        if(negativeSignChosen)
+        {
+            System.out.println("pass neg\n");
+            hold = hold.replaceFirst("_", "");
+            numbers.add(Double.parseDouble(hold) * (-1.0));
+        }
+        else
+        {
+            System.out.println("pass pos\n");
+            numbers.add(Double.parseDouble(hold));
+        }
+
 
         // checks just in case I have
         // Example: 5+
@@ -146,10 +216,10 @@ public class ComputeFunctions {
     }
 
     // For debugging purposes
-    private void printList(ArrayList<Integer> ints, ArrayList<Character> ops)
+    private void printList(ArrayList<Double> ints, ArrayList<Character> ops)
     {
         System.out.printf("---------------------------\nInteger List: ");
-        for(Integer i : ints)
+        for(Double i : ints)
         {
             System.out.printf("%s,", i);
         }
@@ -178,7 +248,7 @@ public class ComputeFunctions {
                 return result += Integer.parseInt(hold);
             case (SUBTRACT):
                 return result -= Integer.parseInt(hold);
-            case (MUTIPLY):
+            case (MULTIPLY):
                 return result *= Integer.parseInt(hold);
             case (DIVIDE):
                 return result /= Integer.parseInt(hold);
