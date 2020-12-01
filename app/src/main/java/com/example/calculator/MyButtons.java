@@ -11,7 +11,7 @@ import com.example.calculator.R;
 public class MyButtons extends ComputeFunctions implements View.OnClickListener {
     private Activity activity;
     private TextView textView;
-
+    private boolean previousResultActivated;
 
     public MyButtons(Activity activity) {
         this.activity = activity;
@@ -62,58 +62,81 @@ public class MyButtons extends ComputeFunctions implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button0:
+                if(previousResultActivated) break;
                 holdTempResult += "0";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button1:
+                if(previousResultActivated) break;
                 holdTempResult += "1";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button2:
+                if(previousResultActivated) break;
                 holdTempResult += "2";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button3:
+//                if(previousResultActivated)
+//                {
+//                    holdTempResult = "";
+//                    numbers.clear();
+//                }
+                if(previousResultActivated) break;
                 holdTempResult += "3";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button4:
+                if(previousResultActivated) break;
                 holdTempResult += "4";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button5:
+                if(previousResultActivated) break;
                 holdTempResult += "5";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button6:
+                if(previousResultActivated) break;
                 holdTempResult += "6";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button7:
+                if(previousResultActivated) break;
                 holdTempResult += "7";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button8:
+                if(previousResultActivated) break;
                 holdTempResult += "8";
                 textView.setText(holdTempResult);
                 break;
             case R.id.button9:
+                if(previousResultActivated) break;
                 holdTempResult += "9";
                 textView.setText(holdTempResult);
                 break;
             case R.id.buttonAdd:
+                if(previousResultActivated) numbers.remove(0); // del
+                previousResultActivated = false;
                 holdTempResult += ADD;
                 textView.setText(holdTempResult);
                 break;
             case R.id.buttonMultiply:
+                if(previousResultActivated) numbers.remove(0); // del
+                previousResultActivated = false;
                 holdTempResult += MUTIPLY;
                 textView.setText(holdTempResult);
                 break;
             case R.id.buttonSubtract:
+                if(previousResultActivated) numbers.remove(0); // del
+                previousResultActivated = false;
                 holdTempResult += SUBTRACT;
                 textView.setText(holdTempResult);
                 break;
             case R.id.buttonDivide:
+                if(previousResultActivated) numbers.remove(0); // del
+                previousResultActivated = false;
                 holdTempResult += DIVIDE;
                 textView.setText(holdTempResult);
                 break;
@@ -122,13 +145,24 @@ public class MyButtons extends ComputeFunctions implements View.OnClickListener 
                 textView.setText(holdTempResult);
                 break;
             case R.id.buttonEquals:
+//                if(opFixed){
+//                    textView.setText("");
+//                    opFixed = false;
+//                    break;
+//                }
                 holdTempResult = Integer.toString(computeResult());
+                System.out.printf("Your holdTempResult when equal is pressed is: %s\n", holdTempResult);
+                previousResultActivated = true;
                 textView.setText(holdTempResult);
                 break;
             case R.id.buttonClear:
+                if(previousResultActivated && numbers.size() != 0) numbers.remove(0);
                 holdTempResult = "";
+                previousResultActivated = false;
                 textView.setText(holdTempResult);
                 break;
         }
     }
+
+
 }
